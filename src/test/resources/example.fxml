@@ -1,6 +1,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import io.github.egormkn.LatexView?>
 
-<VBox>
-    <LatexView formula="\\LaTeX"/>
+<VBox alignment="CENTER">
+    <LatexView formula="\\LaTeX" size="30"/>
 </VBox>
