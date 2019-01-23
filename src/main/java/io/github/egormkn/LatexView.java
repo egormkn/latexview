@@ -47,6 +47,14 @@ public class LatexView extends Canvas {
      */
     private static final Pos DEFAULT_ALIGNMENT = Pos.CENTER;
 
+    static {
+        // Load LaTeX fonts from JLatexMath
+        // TODO: Add all available fonts
+        Font.loadFont(LatexView.class.getResourceAsStream("/org/scilab/forge/jlatexmath/fonts/base/jlm_cmmi10.ttf"), -1);
+        Font.loadFont(LatexView.class.getResourceAsStream("/org/scilab/forge/jlatexmath/fonts/maths/jlm_cmsy10.ttf"), -1);
+        Font.loadFont(LatexView.class.getResourceAsStream("/org/scilab/forge/jlatexmath/fonts/latin/jlm_cmr10.ttf"), -1);
+    }
+
     private TeXIcon texIcon;
 
     public LatexView() {
