@@ -1,18 +1,16 @@
 package io.github.egormkn;
 
-import com.sun.javafx.css.converters.EnumConverter;
 import com.sun.javafx.css.converters.SizeConverter;
-import javafx.beans.InvalidationListener;
-import javafx.beans.NamedArg;
-import javafx.beans.Observable;
-import javafx.beans.property.*;
-import javafx.beans.value.WritableValue;
-import javafx.css.*;
-import javafx.geometry.Pos;
-import javafx.scene.AccessibleRole;
+import javafx.beans.DefaultProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.property.StringPropertyBase;
+import javafx.css.CssMetaData;
+import javafx.css.Styleable;
+import javafx.css.StyleableFloatProperty;
+import javafx.css.StyleableProperty;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import org.jfree.fx.FXGraphics2D;
 import org.scilab.forge.jlatexmath.ParseException;
@@ -20,114 +18,130 @@ import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXFormula;
 import org.scilab.forge.jlatexmath.TeXIcon;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiPredicate;
 
 /**
- * JavaFX component that renders LaTeX formulas
+ * The {@code LatexView} is a JavaFX {@code Node} used for rendering LaTeX formulas
  *
  * @author Egor Makarenko
  */
-// @DefaultProperty("formula") // Broken due to the bug in JavaFX ProxyBuilder
+@DefaultProperty("formula")
 public class LatexView extends Canvas {
 
     /**
-     * Font size to use by default
+     * Font size to use by default.
      */
     private static final float DEFAULT_SIZE = (float) Font.getDefault().getSize();
 
     /**
-     * LaTeX formula to use by default
+     * LaTeX formula to use by default.
      */
-    private static final String DEFAULT_FORMULA = "\\LaTeX";
-
-    /**
-     * Alignment to use by default
-     */
-    private static final Pos DEFAULT_ALIGNMENT = Pos.CENTER;
+    private static final String DEFAULT_FORMULA = "";
 
     static {
-        // Load LaTeX fonts from JLatexMath
-        // TODO: Add all available fonts
-        Font.loadFont(LatexView.class.getResourceAsStream("/org/scilab/forge/jlatexmath/fonts/base/jlm_cmmi10.ttf"), -1);
-        Font.loadFont(LatexView.class.getResourceAsStream("/org/scilab/forge/jlatexmath/fonts/maths/jlm_cmsy10.ttf"), -1);
-        Font.loadFont(LatexView.class.getResourceAsStream("/org/scilab/forge/jlatexmath/fonts/latin/jlm_cmr10.ttf"), -1);
+        // Load all available TTF fonts from JLatexMath packages
+        BiPredicate<Path, BasicFileAttributes> isFont = (path, attr) -> path.toString().endsWith(".ttf");
+        String[] packages = {
+                "/org/scilab/forge/jlatexmath/fonts/",
+                "/org/scilab/forge/jlatexmath/cyrillic/fonts/",
+                "/org/scilab/forge/jlatexmath/greek/fonts/"
+        };
+        for (String pkg : packages) {
+            try {
+                URI uri = LatexView.class.getResource(pkg).toURI();
+                Path path;
+                if (uri.getScheme().equals("jar")) {
+                    path = FileSystems.newFileSystem(uri, Collections.emptyMap()).getPath(pkg);
+                } else {
+                    path = Paths.get(uri);
+                }
+                Files.find(path, 5, isFont)
+                        .map(Path::toString)
+                        .map(LatexView.class::getResourceAsStream)
+                        .forEach(font -> Font.loadFont(font, -1));
+            } catch (URISyntaxException | IOException e) {
+                System.err.println("Failed to load fonts from package " + pkg);
+            }
+        }
     }
 
     private TeXIcon texIcon;
 
+    /**
+     * Allocates a new {@code LatexView} object.
+     */
     public LatexView() {
-        initialize();
-        update();
-        draw();
+        getStyleClass().add(DEFAULT_STYLE_CLASS);
+        setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
     }
 
-    public LatexView(@NamedArg("formula") String formula) {
-        this();
+    /**
+     * Allocates a new {@code LatexView} object using the given LaTeX formula.
+     *
+     * @param formula LaTeX formula that this LatexView uses
+     */
+    public LatexView(String formula) {
+        getStyleClass().add(DEFAULT_STYLE_CLASS);
+        setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
         formulaProperty().set(formula);
     }
 
-    private void initialize() {
-        widthProperty().addListener(new InvalidationListener() {
-            @Override
-            public void invalidated(Observable event) {
-                LatexView.this.draw();
-            }
-        });
-        heightProperty().addListener(new InvalidationListener() {
-            @Override
-            public void invalidated(Observable event) {
-                LatexView.this.draw();
-            }
-        });
+    private void update() throws ParseException {
+        TeXFormula teXFormula;
+        try {
+            teXFormula = new TeXFormula(getFormula());
+        } catch (ParseException e) {
+            System.err.println(e.getMessage());
+            teXFormula = new TeXFormula("\\textcolor{red}{\\text{Error}}");
+        }
 
-        getStyleClass().setAll("latex");
-        setAccessibleRole(AccessibleRole.TEXT);
-        ((StyleableProperty<Boolean>)(WritableValue<Boolean>)focusTraversableProperty()).applyStyle(null, Boolean.FALSE);
-    }
+        texIcon = teXFormula.createTeXIcon(TeXConstants.STYLE_DISPLAY, getSize());
 
-    private void draw() {
+        GraphicsContext gc = getGraphicsContext2D();
+        gc.clearRect(0, 0, getWidth(), getHeight());
+
         double width = texIcon.getIconWidth();
         double height = texIcon.getIconHeight();
 
-        GraphicsContext gc = getGraphicsContext2D();
+        setWidth(width);
+        setHeight(height);
+
         gc.clearRect(0, 0, width, height);
 
-        gc.setStroke(Color.RED);
-        gc.strokeLine(0, 0, 0, height);
-        gc.strokeLine(0, 0, width, 0);
-        gc.strokeLine(0, height, width, height);
-        gc.strokeLine(width, 0, width, height);
-
-        gc.setFill(Color.BLACK);
         FXGraphics2D graphics = new FXGraphics2D(gc);
         texIcon.paintIcon(null, graphics, 0, 0);
     }
 
-    protected void update() {
-        TeXFormula teXFormula;
-        try {
-            teXFormula = new TeXFormula(getFormula());
-        } catch (ParseException p) {
-            teXFormula = new TeXFormula("\\text{Invalid Formula}");
-        }
-
-        texIcon = teXFormula.createTeXIcon(TeXConstants.STYLE_DISPLAY, getSize());
-        setWidth(texIcon.getIconWidth());
-        setHeight(texIcon.getIconHeight());
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isResizable() {
-        return true;
+        return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public double prefWidth(double height) {
         return texIcon.getIconWidth();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public double prefHeight(double width) {
         return texIcon.getIconHeight();
@@ -165,13 +179,14 @@ public class LatexView extends Canvas {
     }
 
     public final String getFormula() {
-        return formulaProperty().get();
+        String value = formulaProperty().get();
+        return value == null ? DEFAULT_FORMULA : value;
     }
 
     /**
      * Formula text size
      */
-    public final FloatProperty sizeProperty() {
+    public final StyleableFloatProperty sizeProperty() {
         if (size == null) {
             size = new StyleableFloatProperty(DEFAULT_SIZE) {
                 @Override
@@ -198,7 +213,7 @@ public class LatexView extends Canvas {
         return size;
     }
 
-    private FloatProperty size;
+    private StyleableFloatProperty size;
 
     public final void setSize(float value) {
         sizeProperty().set(value);
@@ -208,58 +223,17 @@ public class LatexView extends Canvas {
         return sizeProperty().get();
     }
 
+    /***************************************************************************
+     * Stylesheet Handling
+     **************************************************************************/
+
+    private static final String DEFAULT_STYLE_CLASS = "latex-view";
+
     /**
-     * Formula alignment within canvas
+     * Super-lazy instantiation pattern from Bill Pugh.
+     * @treatAsPrivate implementation detail
      */
-    public final ObjectProperty<Pos> alignmentProperty() {
-        if (alignment == null) {
-            alignment = new StyleableObjectProperty<Pos>(DEFAULT_ALIGNMENT) {
-                @Override
-                public void invalidated() {
-                    LatexView.this.update();
-                }
-
-                @Override
-                public Object getBean() {
-                    return LatexView.this;
-                }
-
-                @Override
-                public String getName() {
-                    return "alignment";
-                }
-
-                @Override
-                public CssMetaData<LatexView, Pos> getCssMetaData() {
-                    return LatexView.StyleableProperties.ALIGNMENT;
-                }
-            };
-        }
-        return alignment;
-    }
-
-    private ObjectProperty<Pos> alignment;
-
-    public final void setAlignment(Pos value) { alignmentProperty().set(value); }
-
-    public final Pos getAlignment() { return alignment == null ? DEFAULT_ALIGNMENT : alignment.get(); }
-
     private static class StyleableProperties {
-        private static final CssMetaData<LatexView, Pos> ALIGNMENT =
-                new CssMetaData<LatexView,Pos>("-fx-alignment",
-                        new EnumConverter<Pos>(Pos.class), DEFAULT_ALIGNMENT){
-
-                    @Override
-                    public boolean isSettable(LatexView node) {
-                        return node.alignment == null || !node.alignment.isBound();
-                    }
-
-                    @Override
-                    public StyleableProperty<Pos> getStyleableProperty(LatexView node) {
-                        return (StyleableProperty<Pos>)(WritableValue<Pos>)node.alignmentProperty();
-                    }
-                };
-
         private static final CssMetaData<LatexView,Number> SIZE =
                 new CssMetaData<LatexView,Number>("-fx-font-size", SizeConverter.getInstance(), DEFAULT_SIZE) {
 
@@ -270,7 +244,7 @@ public class LatexView extends Canvas {
 
                     @Override
                     public StyleableProperty<Number> getStyleableProperty(LatexView node) {
-                        return (StyleableProperty<Number>)(WritableValue<Number>)node.sizeProperty();
+                        return node.sizeProperty();
                     }
                 };
 
@@ -278,8 +252,7 @@ public class LatexView extends Canvas {
 
         static {
             final List<CssMetaData<? extends Styleable, ?>> styleables =
-                    new ArrayList<CssMetaData<? extends Styleable, ?>>();
-            styleables.add(ALIGNMENT);
+                    new ArrayList<>();
             styleables.add(SIZE);
             STYLEABLES = Collections.unmodifiableList(styleables);
         }
@@ -290,7 +263,7 @@ public class LatexView extends Canvas {
      * CssMetaData of its super classes.
      */
     public static List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
-        return LatexView.StyleableProperties.STYLEABLES;
+        return StyleableProperties.STYLEABLES;
     }
 
     /**
