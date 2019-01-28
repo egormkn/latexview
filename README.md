@@ -1,5 +1,7 @@
 # LatexView
 
+[![Build Status](https://travis-ci.com/egormkn/latexview.svg?branch=master)](https://travis-ci.com/egormkn/latexview)
+
 LatexView is a custom JavaFX component that renders LaTeX text and formulas using [JLatexMath](https://github.com/opencollab/jlatexmath) library.
 
 ![Demo App](src/test/resources/demo/demo.png)
