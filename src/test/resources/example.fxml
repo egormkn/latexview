@@ -1,6 +1,16 @@
 <?import javafx.scene.layout.VBox?>
 <?import io.github.egormkn.LatexView?>
 
-<VBox alignment="CENTER">
+<VBox alignment="CENTER" spacing="20">
     <LatexView formula="\\LaTeX" size="30"/>
+    <LatexView size="20">
+        \overset{\text{Lorenz system}}{
+            \begin{cases}
+            \frac { \partial \vec v }{\partial t} + \left( \vec v \nabla \right) \vec v = -\frac {\nabla p}{\rho} + \nu \nabla ^2 \vec v + \vec g \\
+            \frac { \partial \rho }{\partial t} + \nabla \cdot \left( \rho \vec v \right) = 0 \\
+            \frac { \partial T }{\partial t} + \nabla \cdot \left( T \vec v \right) = \chi \nabla ^2 T \\
+            \rho = \rho_0 \left( 1 - \gamma \left( T - T_0 \right) \right)
+            \end{cases}
+        }
+    </LatexView>
 </VBox>
