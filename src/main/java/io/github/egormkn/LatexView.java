@@ -149,6 +149,8 @@ public class LatexView extends Canvas {
 
     /**
      * Formula text
+     *
+     * @return formula text as a {@code StringProperty}
      */
     public final StringProperty formulaProperty() {
         if (formula == null) {
@@ -185,6 +187,8 @@ public class LatexView extends Canvas {
 
     /**
      * Formula text size
+     *
+     * @return formula text size as a {@code FloatProperty}
      */
     public final StyleableFloatProperty sizeProperty() {
         if (size == null) {

@@ -1,19 +1,36 @@
 language: java
 
+env:
+  global:
+  - secure: "h1ArmoQSaKivrTr9yE7JcyCoBtQOjykwAHWyH5ntZU6gelHWX0M9L4aOUcgluEZBNs6pQDVBBuIBEJmiqkSkJ/pcK4DQnlj6xUth02ymUa6DRigbKTxaVH2jBjk9iXcKXtRX5Eoe74ED8DLdeh/3kE+mC1NWU6BpLtFD/gdWYnkTcdCPLN5JFxCpa2tzwBQh76IQF+uWeiRqLtOBT2ABXsN6b5bofb5eMvm9sERNCFD4Cq/MJpGGcOYs/EJ8s/Hy8OndnVInd3DCwoKbCCGani+zmON87u3UreP+ZoemRZTXbHAKzpTdJCPKAD9FDlQec/8NXclcV/BTsQgsMGFwMx5iFvK3QU4yXZ8e0gZo9R0XifZNi6UDzozG9I2eFGt1eetwD7hKJ97tbJI8E2NESO/D6prKdt9e16UawKsuqbkPkRk24Gt+sWUFhSsRo+heT2rglusDDrNFQ1aQVLg0AKSimoNJJoEvaScRyzXnjbP2zNh3qbZRytTKXYGxVY3aUpf8VSKi99FKF/AGIeMDyR4awAPcOX8073pT9a0+BkFImDD2wuzhQM3j2h/cmDn+2ha4K8GVHKgbbNfFui9Ubo+TvXlnaQ0MwVma7pOTsBWFFXvaYcBECEW/aK9VeWjSmnj5hDFF21bfpfKDNF5YCo7uRPZHATE/e0VMao1oUpA="
+  - secure: "BBJa0hw39+KlX2JuEGZZDWAxjPOiJ4lDgGVPBYxhaKRV4JaCN3jYoJ5R50YdErgjhuhUDC7XkEq/eRmel4D3QMI0Oi+yA6V3xxaj/Fh70IzBlgi/ghOnZwPEtdSFq//gyeJ4oTkNu6TYHFFtmP+xCncDrOu2LC7vly+ew19eJdHbsUyVtaKou7kTgW1/L8QITXZknKDKC/txizZX9LxlzsYstuySuD2BuoC5t5KfinuOPPSBhSmzp8ILD9fYUPT2i2yicEoYf/HXN2RT8BOe1KVVBpBFkklzt3CUa59BQ3eIeaQS8HQ0HC6x7MJ9wobvI2I7ZqiQC8yCWUBzR4jVgboroBIBNL9iUYM5aIETp8jcnwIxq06qyLHpU593h/5Yl/haHIr4RV1iXKA0S8gM8BuvmBTZxi0Hlab0Sl4ecAFIQvrSA59Nlzr6gtMuXwYHr3MWkHgo1/wlc+gjujd1b1W9fVTo1+Gag3mB6uOWk8UQWN+A9SDPGmXP3Yv+HXIYp/6ftcGJHSUw2wvH10cmM40R07V9qRLkGA+JJd58HWZ5RP5icSmRrMAOwf+zWv+M88n0FborIHJ+GBqITimMuMpbkDmMgh+E63euq3nQrnQZGmROg+JVGhzkZ8Ox9guXH+0knh99zwwxfJFQ+ltaa9Xain4hYjzEAfbRbsErJlw="
+  - secure: "N2U/ncUb3ahtx5Z8/0OZwlwsJ5D+iP7nhZyYMCvgUgUw2UvgivoTuovcZ+XJFcifJj3/Zn6fnfZYJiT8Vs0u0X3M+uiytnuMl5ZkimLtLlbygX4icXBaWqmlnkM7nggz0mQm33mhhIXIDaBedsiGLMhCLF6xhgYiDMDYmfaE6EO4hZFHF86kQxe/4P0dfec8EKPGvgTKNzvpkGQo/OE4immztBsTIaKSfVhryPpKIWKuD36yYmFH1l4G7szskNt7JoMGsOk3OIWJioBu+eDPq6u4Jk2ZQfXyZvbU5ztMzsRlZaSAiehYIfsogdlXWFQYrt9oBuwDoPuDEbcjtRnw2DajIrRpFSAVwdXpaXFYNcDr2OFe9zpELPIyTghHVSFdbuGPSDLw4O1+63yW0yd6SIjzj14KbrGqDpCnOmga3iZeHg/zv4DbERxoY1N2zr4vxVi078eFAUWm0CtT0oVhsDI/93PKjmZovQELIEMPcqqi4X226F5mpPlKzRtJyPSi7/DVKd8OxXcZ0gHCibmGYzr4HBQlpQSMFXUp5Cday9FKrDv9dg4BH8QP46GWQvvxrBAHvWGM4QyRZr/QzgJN/fckZsNdAN18ww7HS1myJVQ2rZIV3rqIQCLpTw568vz0pPG9KPhw6LgylRsNAPzAvnk+26Hr+Y74ik3BbSiobD4="
+
+before_install:
+- openssl aes-256-cbc -K $encrypted_e50734381144_key -iv $encrypted_e50734381144_iv -in deployment/private.key.enc -out deployment/private.key -d
+- gpg --import deployment/private.key
+
 before_deploy:
 - mvn help:evaluate -N -Dexpression=project.version | grep -v '\['
-- export PROJECT_VERSION=$(mvn help:evaluate -N -Dexpression=project.version | grep -v '\[')
+- export POM_VERSION=$(mvn help:evaluate -N -Dexpression=project.version | grep -v '\[')
+- echo ">>> Git tag" $TRAVIS_TAG
+- echo ">>> POM version" $POM_VERSION
 
 deploy:
-  provider: releases
+- provider: releases
   api_key:
     secure: vcFy/fiHi04E9l5zj5nsiZAG0LsIScvtKEgZiuxDjxEJmS1CqmJ1yH/m1qgP54QjRBghQcO2QzTq9tY5020is2GqlkbeWkH4XQA6NJ+FcA3UE8+5hIMp80zFKnY6jqnuodR1/2scWrZgU2+tjB9icoDHszFn1wy+R73K758LZWlxt2Ea0fUKH8Lr5MuGSb/UcU+b5fM+3sZ/N1fhLA1bNcsx48mOqDnSUzwXCNifmmo1zl122OtLIDcOMBUmsLIVfoDYXzmKgLXmnubHfT4Xec7OTGX7Lg5JHWVVPDWxOuSSjP9NvxcnKAX7dUtqTqusPa+gxq4dXnQubKsi2/A6anu3ti6ulawvFnET/2NbjRYFNc8WHC09f7kmLSkDObUhIC6u/Vfj6TIIMedEebpcRXrkFkk4EIZKa284fDBwdo72P0G74hpsGl5DkZPJ+v0H4L0UrTDARROPzIDDFAKHuIBW3N5SfpZM71zo00jB1zEnxgJuQCmDHheVx8zWDdrH0fKiCr6v+x63IBSuF8+nTZkcPZZYJHUMolNLHGeCK2bIhYB0qQVsiSLMN5RtPKfJUQuA39Ld2rQDiOVCIs+WGDuYarnjTn60GWGzXK8BFL1jyijlgsaLUQ7OY1E9GvewDocJYEONcIrV/+l6Iaghe6UDz6vd3p4jkdMMKBZmDhQ=
-  file:
-    - target/latexview-$PROJECT_VERSION.jar
-    - target/latexview-$PROJECT_VERSION-javadoc.jar
-    - target/latexview-$PROJECT_VERSION-sources.jar
+  file_glob: true
+  file: target/latexview-*.jar
   on:
     repo: egormkn/latexview
+    branch: master
     tags: true
   skip_cleanup: true
-  name: $PROJECT_VERSION
+  name: "$PROJECT_VERSION"
+- provider: script
+  script: mvn clean deploy -P release -s deployment/settings.xml
+  on:
+    repo: egormkn/latexview
+    branch: master
+    tags: true
