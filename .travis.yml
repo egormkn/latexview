@@ -1,19 +1,33 @@
 language: java
 
-before_deploy:
-- mvn help:evaluate -N -Dexpression=project.version | grep -v '\['
-- export PROJECT_VERSION=$(mvn help:evaluate -N -Dexpression=project.version | grep -v '\[')
+env:
+  global:
+  - secure: "KDwvyN3a/khE5G1MENFrjmuhmtXw8Jc1J1EVRnkz/+8SM7yhGCLSuwRKTa8jPvfutjv97UwxOg/ha4XezWLIcelm8GCeeKziQQL2KjOLFVLVZ7jcw7ExbWXSkoqJ6QSWpXJqW+GVsMtkp+FJBZJkn6q28cWmewKgjSkd18NyB6Oj1Y68G3V6DOyGayzRXGdMQ9B2xI30MoxVfp/h4liT+LP4c4A7LwhiOQBi4/l3fLSKsZ9l0LreAlx8mClliVgkuSP2l3stEo93xjF60TStQBqA55jMLfRHhiEsu7DA3pYpDFeZODz9JYJP7N2qixQIydw5yySjA+j/cpyDvCPbY7a0HZcX97B97yRjHz3NH1Wvq8CM5ofzcI4XaOVAHgGJY3X4xa3SYf5PTM4e2vEPOPm3f617l5ikz4qGK+nVZn036pMiVAG7NVfNqeVEFYSzp9pHsuUbuIYO9wn/qivsIOqwrQ4FPAlOZtG79gIdJJaHluee92ojj0CZG3ZicvjWd2dtx1OE0KuTHm/SJHC0yP7er7eXuBE3lbs4PffrYo3ihooGUR+R337xL7JGUrS/UZtmCn6rFmFsdsTixafwkkGNAR91QfbZMVnt/Rk4KsrZOXMVMCQudRFjQxfrjiyxju2p4gX0LLSUFKaqeIhhKjZZ66SuPSP2LOLM4dLEj2c="
+  - secure: "BBJa0hw39+KlX2JuEGZZDWAxjPOiJ4lDgGVPBYxhaKRV4JaCN3jYoJ5R50YdErgjhuhUDC7XkEq/eRmel4D3QMI0Oi+yA6V3xxaj/Fh70IzBlgi/ghOnZwPEtdSFq//gyeJ4oTkNu6TYHFFtmP+xCncDrOu2LC7vly+ew19eJdHbsUyVtaKou7kTgW1/L8QITXZknKDKC/txizZX9LxlzsYstuySuD2BuoC5t5KfinuOPPSBhSmzp8ILD9fYUPT2i2yicEoYf/HXN2RT8BOe1KVVBpBFkklzt3CUa59BQ3eIeaQS8HQ0HC6x7MJ9wobvI2I7ZqiQC8yCWUBzR4jVgboroBIBNL9iUYM5aIETp8jcnwIxq06qyLHpU593h/5Yl/haHIr4RV1iXKA0S8gM8BuvmBTZxi0Hlab0Sl4ecAFIQvrSA59Nlzr6gtMuXwYHr3MWkHgo1/wlc+gjujd1b1W9fVTo1+Gag3mB6uOWk8UQWN+A9SDPGmXP3Yv+HXIYp/6ftcGJHSUw2wvH10cmM40R07V9qRLkGA+JJd58HWZ5RP5icSmRrMAOwf+zWv+M88n0FborIHJ+GBqITimMuMpbkDmMgh+E63euq3nQrnQZGmROg+JVGhzkZ8Ox9guXH+0knh99zwwxfJFQ+ltaa9Xain4hYjzEAfbRbsErJlw="
+  - secure: "N2U/ncUb3ahtx5Z8/0OZwlwsJ5D+iP7nhZyYMCvgUgUw2UvgivoTuovcZ+XJFcifJj3/Zn6fnfZYJiT8Vs0u0X3M+uiytnuMl5ZkimLtLlbygX4icXBaWqmlnkM7nggz0mQm33mhhIXIDaBedsiGLMhCLF6xhgYiDMDYmfaE6EO4hZFHF86kQxe/4P0dfec8EKPGvgTKNzvpkGQo/OE4immztBsTIaKSfVhryPpKIWKuD36yYmFH1l4G7szskNt7JoMGsOk3OIWJioBu+eDPq6u4Jk2ZQfXyZvbU5ztMzsRlZaSAiehYIfsogdlXWFQYrt9oBuwDoPuDEbcjtRnw2DajIrRpFSAVwdXpaXFYNcDr2OFe9zpELPIyTghHVSFdbuGPSDLw4O1+63yW0yd6SIjzj14KbrGqDpCnOmga3iZeHg/zv4DbERxoY1N2zr4vxVi078eFAUWm0CtT0oVhsDI/93PKjmZovQELIEMPcqqi4X226F5mpPlKzRtJyPSi7/DVKd8OxXcZ0gHCibmGYzr4HBQlpQSMFXUp5Cday9FKrDv9dg4BH8QP46GWQvvxrBAHvWGM4QyRZr/QzgJN/fckZsNdAN18ww7HS1myJVQ2rZIV3rqIQCLpTw568vz0pPG9KPhw6LgylRsNAPzAvnk+26Hr+Y74ik3BbSiobD4="
+
+before_install:
+- openssl aes-256-cbc -K $encrypted_e50734381144_key -iv $encrypted_e50734381144_iv -in deployment/private.key.enc -out deployment/private.key -d
+- gpg --import deployment/private.key
+
+before_script:
+- export POM_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
 
 deploy:
-  provider: releases
+- provider: releases
   api_key:
-    secure: vcFy/fiHi04E9l5zj5nsiZAG0LsIScvtKEgZiuxDjxEJmS1CqmJ1yH/m1qgP54QjRBghQcO2QzTq9tY5020is2GqlkbeWkH4XQA6NJ+FcA3UE8+5hIMp80zFKnY6jqnuodR1/2scWrZgU2+tjB9icoDHszFn1wy+R73K758LZWlxt2Ea0fUKH8Lr5MuGSb/UcU+b5fM+3sZ/N1fhLA1bNcsx48mOqDnSUzwXCNifmmo1zl122OtLIDcOMBUmsLIVfoDYXzmKgLXmnubHfT4Xec7OTGX7Lg5JHWVVPDWxOuSSjP9NvxcnKAX7dUtqTqusPa+gxq4dXnQubKsi2/A6anu3ti6ulawvFnET/2NbjRYFNc8WHC09f7kmLSkDObUhIC6u/Vfj6TIIMedEebpcRXrkFkk4EIZKa284fDBwdo72P0G74hpsGl5DkZPJ+v0H4L0UrTDARROPzIDDFAKHuIBW3N5SfpZM71zo00jB1zEnxgJuQCmDHheVx8zWDdrH0fKiCr6v+x63IBSuF8+nTZkcPZZYJHUMolNLHGeCK2bIhYB0qQVsiSLMN5RtPKfJUQuA39Ld2rQDiOVCIs+WGDuYarnjTn60GWGzXK8BFL1jyijlgsaLUQ7OY1E9GvewDocJYEONcIrV/+l6Iaghe6UDz6vd3p4jkdMMKBZmDhQ=
-  file:
-    - target/latexview-$PROJECT_VERSION.jar
-    - target/latexview-$PROJECT_VERSION-javadoc.jar
-    - target/latexview-$PROJECT_VERSION-sources.jar
+    secure: LP4owC3qJbShPfwufXm7IiEyYVUaMQN3HzHBs4WIN1hBFS11lzFmyjsG3cm01r6EJK4prf8qPJAOAD+c9MMwYzSfuUZS9MqOz/+BerydQU5PhQFeDzEzgSFobakgcCdkCi7E03WyIhUoGmnW5erVReKwEzrDPrtT6gPEHXFVDsHEvIybjjHrmxDhxYomiMpXd1gbRuwTs/jvGHNgeMKx/zpet4v5+1Er5b1Auvwa2Qez50+mzc6GgWuOyyIwZtrIKoLpMgoxVfWbd+nBuCHEM1IctIXcbuad8D9NRqq+08V9TYytin7v9dqOKonfuQK7xhUoC8vjgREp9kzYg5B6ymkN7VEIvRWYhTFOVTwHJWAOFMEmNDx14PknnwUDxCoIB7mi3L0LW3+5PQM+y0ldiboBK3wvkOInXwP9WZi2tgne5KjtCz0AfvNbVAlyjynOxHw1t3aY2QCD81wJ4pBO1aQmW2Xtql1QxL1byrjSTIMijWzHS5ELaS/l6hWHTZEsSlX/0XmfqEYr+EaJ8kqyWgPu0Px1WUmIc1u6bJlG9hcLyfkpAiEuYQfan764aGJqgqjseCd2IwAikOd8g0FmVttXPn22+I82K/52GCFct6YhR25W9ftmR1r5wNnKzcz9kZuP2XuYfAxBi6AABcHSEz3Cw2uNEp/bEfHi+xrLthU=
+  file_glob: true
+  file: target/latexview-*.jar
   on:
     repo: egormkn/latexview
     tags: true
+    condition: $TRAVIS_TAG == $POM_VERSION
   skip_cleanup: true
-  name: $PROJECT_VERSION
+  name: $POM_VERSION
+- provider: script
+  script: mvn clean deploy -P release -s deployment/settings.xml
+  on:
+    repo: egormkn/latexview
+    tags: true
+    condition: $TRAVIS_TAG == $POM_VERSION
