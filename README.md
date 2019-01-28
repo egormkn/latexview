@@ -1,6 +1,6 @@
 # LatexView
 
-[![Build Status](https://travis-ci.com/egormkn/latexview.svg?branch=master)](https://travis-ci.com/egormkn/latexview)
+[![Build Status](https://travis-ci.com/egormkn/latexview.svg?branch=master)](https://travis-ci.com/egormkn/latexview) [![](https://img.shields.io/maven-central/v/io.github.egormkn/latexview.svg)](https://repo.maven.apache.org/maven2/io/github/egormkn/latexview/) [![](https://img.shields.io/nexus/r/https/oss.sonatype.org/io.github.egormkn/latexview.svg)](https://oss.sonatype.org/content/repositories/releases/io/github/egormkn/latexview/)
 
 LatexView is a custom JavaFX component that renders LaTeX text and formulas using [JLatexMath](https://github.com/opencollab/jlatexmath) library.
 
