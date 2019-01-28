@@ -4,3 +4,16 @@ before_deploy:
 - mvn help:evaluate -N -Dexpression=project.version | grep -v '\['
 - export PROJECT_VERSION=$(mvn help:evaluate -N -Dexpression=project.version | grep -v '\[')
 
+deploy:
+  provider: releases
+  api_key:
+    secure: vcFy/fiHi04E9l5zj5nsiZAG0LsIScvtKEgZiuxDjxEJmS1CqmJ1yH/m1qgP54QjRBghQcO2QzTq9tY5020is2GqlkbeWkH4XQA6NJ+FcA3UE8+5hIMp80zFKnY6jqnuodR1/2scWrZgU2+tjB9icoDHszFn1wy+R73K758LZWlxt2Ea0fUKH8Lr5MuGSb/UcU+b5fM+3sZ/N1fhLA1bNcsx48mOqDnSUzwXCNifmmo1zl122OtLIDcOMBUmsLIVfoDYXzmKgLXmnubHfT4Xec7OTGX7Lg5JHWVVPDWxOuSSjP9NvxcnKAX7dUtqTqusPa+gxq4dXnQubKsi2/A6anu3ti6ulawvFnET/2NbjRYFNc8WHC09f7kmLSkDObUhIC6u/Vfj6TIIMedEebpcRXrkFkk4EIZKa284fDBwdo72P0G74hpsGl5DkZPJ+v0H4L0UrTDARROPzIDDFAKHuIBW3N5SfpZM71zo00jB1zEnxgJuQCmDHheVx8zWDdrH0fKiCr6v+x63IBSuF8+nTZkcPZZYJHUMolNLHGeCK2bIhYB0qQVsiSLMN5RtPKfJUQuA39Ld2rQDiOVCIs+WGDuYarnjTn60GWGzXK8BFL1jyijlgsaLUQ7OY1E9GvewDocJYEONcIrV/+l6Iaghe6UDz6vd3p4jkdMMKBZmDhQ=
+  file:
+    - target/latexview-$PROJECT_VERSION.jar
+    - target/latexview-$PROJECT_VERSION-javadoc.jar
+    - target/latexview-$PROJECT_VERSION-sources.jar
+  on:
+    repo: egormkn/latexview
+    tags: true
+  skip_cleanup: true
+  name: $PROJECT_VERSION
