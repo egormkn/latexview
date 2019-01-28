@@ -1,0 +1,83 @@
+<?import io.github.egormkn.LatexView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="demo.Demo" stylesheets="@demo.css" spacing="10">
+
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+
+    <VBox alignment="CENTER" VBox.vgrow="ALWAYS" style="-fx-border-color: #CCC; -fx-border-width: 3; -fx-border-style: dashed;">
+        <LatexView fx:id="latexView" size="24">
+            \overset{3 \times 4 \text{ matrix}}{\begin{pmatrix}
+            \cdot &amp; \cdot &amp; \cdot &amp; \cdot \\
+            \cdot &amp; \cdot &amp; \cdot &amp; \cdot \\
+            \textcolor{Blue} 1 &amp; \textcolor{Blue} 2 &amp; \textcolor{Blue} 3 &amp; \textcolor{Blue} 4 \\
+            \end{pmatrix}}
+            \overset{4 \times 5 \text{ matrix}}{\begin{pmatrix}
+            \cdot &amp; \cdot &amp; \cdot &amp; \textcolor{Red}a &amp; \cdot \\
+            \cdot &amp; \cdot &amp; \cdot &amp; \textcolor{Red}b &amp; \cdot \\
+            \cdot &amp; \cdot &amp; \cdot &amp; \textcolor{Red}c &amp; \cdot \\
+            \cdot &amp; \cdot &amp; \cdot &amp; \textcolor{Red}d &amp; \cdot \\
+            \end{pmatrix}}
+            =
+            \overset{3 \times 5 \text{ matrix}}{
+            \begin{pmatrix}
+            \cdot &amp; \cdot &amp; \cdot &amp; \cdot &amp; \cdot \\
+            \cdot &amp; \cdot &amp; \cdot &amp; \cdot &amp; \cdot \\
+            \cdot &amp; \cdot &amp; \cdot &amp; x_{3,4} &amp; \cdot \\
+            \end{pmatrix}}
+            \\
+            \\
+            x_{3,4} =
+            ({\textcolor{Blue}1}, {\textcolor{Blue}2}, {\textcolor{Blue}3}, {\textcolor{Blue}4})\cdot
+            ({\textcolor{Red}a}, {\textcolor{Red}b}, {\textcolor{Red}c}, {\textcolor{Red}d})
+            = {\textcolor{Blue} 1}\cdot{\textcolor{Red} a}
+            +{\textcolor{Blue} 2}\cdot{\textcolor{Red} b}
+            +{\textcolor{Blue} 3}\cdot{\textcolor{Red} c}
+            +{\textcolor{Blue} 4}\cdot{\textcolor{Red} d}
+        </LatexView>
+    </VBox>
+
+    <GridPane VBox.vgrow="NEVER" hgap="10" vgap="10">
+        <rowConstraints>
+            <RowConstraints valignment="TOP"/>
+            <RowConstraints valignment="BOTTOM"/>
+        </rowConstraints>
+
+        <TextArea GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.rowSpan="2" fx:id="textArea" prefHeight="100">
+            \overset{3 \times 4 \text{ matrix}}{\begin{pmatrix}
+            \cdot &amp; \cdot &amp; \cdot &amp; \cdot \\
+            \cdot &amp; \cdot &amp; \cdot &amp; \cdot \\
+            \textcolor{Blue} 1 &amp; \textcolor{Blue} 2 &amp; \textcolor{Blue} 3 &amp; \textcolor{Blue} 4 \\
+            \end{pmatrix}}
+            \overset{4 \times 5 \text{ matrix}}{\begin{pmatrix}
+            \cdot &amp; \cdot &amp; \cdot &amp; \textcolor{Red}a &amp; \cdot \\
+            \cdot &amp; \cdot &amp; \cdot &amp; \textcolor{Red}b &amp; \cdot \\
+            \cdot &amp; \cdot &amp; \cdot &amp; \textcolor{Red}c &amp; \cdot \\
+            \cdot &amp; \cdot &amp; \cdot &amp; \textcolor{Red}d &amp; \cdot \\
+            \end{pmatrix}}
+            =
+            \overset{3 \times 5 \text{ matrix}}{
+            \begin{pmatrix}
+            \cdot &amp; \cdot &amp; \cdot &amp; \cdot &amp; \cdot \\
+            \cdot &amp; \cdot &amp; \cdot &amp; \cdot &amp; \cdot \\
+            \cdot &amp; \cdot &amp; \cdot &amp; x_{3,4} &amp; \cdot \\
+            \end{pmatrix}}
+            \\
+            \\
+            x_{3,4} =
+            ({\textcolor{Blue}1}, {\textcolor{Blue}2}, {\textcolor{Blue}3}, {\textcolor{Blue}4})\cdot
+            ({\textcolor{Red}a}, {\textcolor{Red}b}, {\textcolor{Red}c}, {\textcolor{Red}d})
+            = {\textcolor{Blue} 1}\cdot{\textcolor{Red} a}
+            +{\textcolor{Blue} 2}\cdot{\textcolor{Red} b}
+            +{\textcolor{Blue} 3}\cdot{\textcolor{Red} c}
+            +{\textcolor{Blue} 4}\cdot{\textcolor{Red} d}
+        </TextArea>
+
+        <Button text="Update" onAction="#update" minWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+        <Button text="Clear" onAction="#update" minWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+    </GridPane>
+</VBox>
