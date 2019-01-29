@@ -1,12 +1,12 @@
 # LatexView
 
-[![Build Status](https://travis-ci.com/egormkn/latexview.svg?branch=master)](https://travis-ci.com/egormkn/latexview) [![](https://img.shields.io/maven-central/v/io.github.egormkn/latexview.svg)](https://repo.maven.apache.org/maven2/io/github/egormkn/latexview/) [![](https://img.shields.io/nexus/r/https/oss.sonatype.org/io.github.egormkn/latexview.svg)](https://oss.sonatype.org/content/repositories/releases/io/github/egormkn/latexview/)
+[![Build Status](https://travis-ci.com/egormkn/latexview.svg?branch=master)](https://travis-ci.com/egormkn/latexview) [![Maven Central](https://img.shields.io/maven-central/v/io.github.egormkn/latexview.svg)](https://search.maven.org/artifact/io.github.egormkn/latexview/) [![](https://img.shields.io/nexus/r/https/oss.sonatype.org/io.github.egormkn/latexview.svg)](https://oss.sonatype.org/content/repositories/releases/io/github/egormkn/latexview/) ![License](https://img.shields.io/github/license/egormkn/latexview.svg)
 
 LatexView is a custom JavaFX component that renders LaTeX text and formulas using [JLatexMath](https://github.com/opencollab/jlatexmath) library.
 
 ![Demo App](src/test/resources/demo/demo.png)
 
-Use [Demo](src/test/demo/Demo.java) application to test LaTeX rendering.
+Use [Demo](src/test/demo/Demo.java) application to test LaTeX rendering and syntax support.
 
 See [JLatexMath](https://github.com/opencollab/jlatexmath) documentation for supported LaTeX features.
 
@@ -16,11 +16,21 @@ See [JLatexMath](https://github.com/opencollab/jlatexmath) documentation for sup
 
 ```xml
 <dependency>
-    <groupId>io.github.egormkn</groupId>
-    <artifactId>latexview</artifactId>
-    <version>0.6.0</version>
+  <groupId>io.github.egormkn</groupId>
+  <artifactId>latexview</artifactId>
+  <version>0.6.0</version>
 </dependency>
 ```
+
+### Gradle dependency
+
+```gradle
+implementation 'io.github.egormkn:latexview:0.6.0'
+```
+
+### Other build systems
+
+Installation details for other build systems can be found on [Central Repository](https://search.maven.org/artifact/io.github.egormkn/latexview/) page.
 
 ## Usage
 
