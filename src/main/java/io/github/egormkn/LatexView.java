@@ -62,7 +62,11 @@ public class LatexView extends Canvas {
                 URI uri = LatexView.class.getResource(pkg).toURI();
                 Path path;
                 if (uri.getScheme().equals("jar")) {
-                    path = FileSystems.newFileSystem(uri, Collections.emptyMap()).getPath(pkg);
+                    try {
+                        path = FileSystems.newFileSystem(uri, Collections.emptyMap()).getPath(pkg);
+                    catch (FileSystemAlreadyExistsException e) {
+                        path = FileSystem.getFileSystem(uri).getPath(pkg);
+                    }
                 } else {
                     path = Paths.get(uri);
                 }
