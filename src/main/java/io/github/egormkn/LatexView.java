@@ -21,6 +21,7 @@ import org.scilab.forge.jlatexmath.TeXIcon;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.FileSystemAlreadyExistsException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -64,8 +65,8 @@ public class LatexView extends Canvas {
                 if (uri.getScheme().equals("jar")) {
                     try {
                         path = FileSystems.newFileSystem(uri, Collections.emptyMap()).getPath(pkg);
-                    catch (FileSystemAlreadyExistsException e) {
-                        path = FileSystem.getFileSystem(uri).getPath(pkg);
+                    } catch (FileSystemAlreadyExistsException e) {
+                        path = FileSystems.getFileSystem(uri).getPath(pkg);
                     }
                 } else {
                     path = Paths.get(uri);

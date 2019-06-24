@@ -18,14 +18,14 @@ See [JLatexMath](https://github.com/opencollab/jlatexmath) documentation for sup
 <dependency>
   <groupId>io.github.egormkn</groupId>
   <artifactId>latexview</artifactId>
-  <version>0.6.0</version>
+  <version>0.6.1</version>
 </dependency>
 ```
 
 ### Gradle dependency
 
 ```gradle
-implementation 'io.github.egormkn:latexview:0.6.0'
+implementation 'io.github.egormkn:latexview:0.6.1'
 ```
 
 ### Other build systems
