@@ -27,7 +27,7 @@ deploy:
     branch: master
     tags: true
   skip_cleanup: true
-  name: "$PROJECT_VERSION"
+  name: "$POM_VERSION"
 - provider: script
   script: mvn clean deploy -P release -s deployment/settings.xml
   on:
